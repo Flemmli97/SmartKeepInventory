@@ -2,15 +2,13 @@ package io.github.flemmli97.smartkeepinventory.data;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.flemmli97.smartkeepinventory.ServerPlayerDeathSource;
 import io.github.flemmli97.smartkeepinventory.SmartKeepInventory;
-import net.minecraft.advancements.critereon.DamageSourcePredicate;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.advancements.criterion.DamageSourcePredicate;
+import net.minecraft.advancements.criterion.EntityPredicate;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -29,7 +27,7 @@ public record ConditionData(Optional<EntityPredicate> player,
                     .apply(instance, (player, killer, damage, keepExperience, disabled)
                             -> new ConditionData(player, killer, damage, keepExperience.orElse(true), disabled.orElse(false))));
 
-    public boolean matches(ServerPlayer player, DamageSource source, @Nullable Entity killer, ResourceLocation context) {
+    public boolean matches(ServerPlayer player, DamageSource source, @Nullable Entity killer, Identifier context) {
         if (SmartKeepInventory.EXPERIENCE.equals(context) && !this.keepExperience())
             return false;
         if (!this.player.map(p -> p.matches(player, player)).orElse(true))

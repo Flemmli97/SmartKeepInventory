@@ -1,14 +1,10 @@
 package io.github.flemmli97.smartkeepinventory;
 
-import com.ibm.icu.impl.coll.BOCSU;
 import com.mojang.serialization.Codec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -16,13 +12,13 @@ import java.util.Set;
  */
 public interface ServerPlayerDeathSource {
 
-    boolean smartInv$shouldKeepInventory(ResourceLocation context);
+    boolean smartInv$shouldKeepInventory(Identifier context);
 
     void smartInv$calculateKeepInventoryState(DamageSource source);
 
-    record DeathData(Set<ResourceLocation> context) {
+    record DeathData(Set<Identifier> context) {
 
-        public static final Codec<DeathData> CODEC = ResourceLocation.CODEC.listOf().xmap(l -> new DeathData(Set.copyOf(l)),
-                d-> List.copyOf(d.context()));
+        public static final Codec<DeathData> CODEC = Identifier.CODEC.listOf().xmap(l -> new DeathData(Set.copyOf(l)),
+                d -> List.copyOf(d.context()));
     }
 }

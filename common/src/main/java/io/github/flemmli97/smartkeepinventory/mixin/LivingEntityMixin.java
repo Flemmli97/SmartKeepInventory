@@ -30,10 +30,10 @@ public class LivingEntityMixin {
         SmartKeepInventory.setGameRulePlayer(null);
     }
 
-    @WrapOperation(method = "dropAllDeathLoot", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;dropExperience(Lnet/minecraft/world/entity/Entity;)V"))
-    private void onDropExp(LivingEntity instance, Entity entity, Operation<Void> original) {
+    @WrapOperation(method = "dropAllDeathLoot", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;dropExperience(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/Entity;)V"))
+    private void onDropExp(LivingEntity instance, ServerLevel level, Entity entity, Operation<Void> original) {
         SmartKeepInventory.setGameRuleContextPlayer(SmartKeepInventory.EXPERIENCE);
-        original.call(instance, entity);
+        original.call(instance, level, entity);
         SmartKeepInventory.setGameRuleContextPlayer(null);
     }
 }

@@ -1,29 +1,23 @@
 package io.github.flemmli97.smartkeepinventory.mixin;
 
-import com.google.common.collect.ImmutableSet;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.mojang.authlib.GameProfile;
 import io.github.flemmli97.smartkeepinventory.ServerPlayerDeathSource;
 import io.github.flemmli97.smartkeepinventory.SmartKeepInventory;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.Optional;
 
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerMixin extends Player implements ServerPlayerDeathSource {
@@ -31,8 +25,8 @@ public abstract class ServerPlayerMixin extends Player implements ServerPlayerDe
     @Unique
     private DeathData smartInv$deathData;
 
-    private ServerPlayerMixin(Level level, BlockPos pos, float yRot, GameProfile gameProfile) {
-        super(level, pos, yRot, gameProfile);
+    private ServerPlayerMixin(Level level, GameProfile gameProfile) {
+        super(level, gameProfile);
     }
 
     @WrapMethod(method = "restoreFrom")
@@ -40,7 +34,7 @@ public abstract class ServerPlayerMixin extends Player implements ServerPlayerDe
         SmartKeepInventory.setGameRulePlayer(that);
         original.call(that, keepEverything);
         // The vanilla handling is all under one block so if we want to handle it separately we do it here
-        if (!keepEverything && !((ServerPlayerDeathSource)that).smartInv$shouldKeepInventory(SmartKeepInventory.EXPERIENCE)) {
+        if (!keepEverything && !((ServerPlayerDeathSource) that).smartInv$shouldKeepInventory(SmartKeepInventory.EXPERIENCE)) {
             this.experienceLevel = 0;
             this.totalExperience = 0;
             this.experienceProgress = 0;
@@ -53,24 +47,20 @@ public abstract class ServerPlayerMixin extends Player implements ServerPlayerDe
      * The death data needs to be persistent in case the player logs out after dying
      */
     @Inject(method = "addAdditionalSaveData", at = @At("RETURN"))
-    private void saveData(CompoundTag compound, CallbackInfo info) {
+    private void saveData(ValueOutput output, CallbackInfo ci) {
         if (this.smartInv$deathData != null) {
-            compound.put(SmartKeepInventory.MODID + ":deathData",
-                    DeathData.CODEC.encodeStart(NbtOps.INSTANCE, this.smartInv$deathData).getOrThrow());
+            output.store(SmartKeepInventory.MODID + ":deathData", DeathData.CODEC, this.smartInv$deathData);
         }
     }
 
     @Inject(method = "readAdditionalSaveData", at = @At("RETURN"))
-    private void loadData(CompoundTag compound, CallbackInfo info) {
-        if (compound.contains(SmartKeepInventory.MODID + ":deathData")) {
-            this.smartInv$deathData = DeathData.CODEC.parse(NbtOps.INSTANCE, compound.get(SmartKeepInventory.MODID + ":deathData"))
-                    .ifError(e->SmartKeepInventory.LOGGER.error(e.message()))
-                    .result().orElse(null);
-        }
+    private void loadData(ValueInput input, CallbackInfo ci) {
+        input.read(SmartKeepInventory.MODID + ":deathData", DeathData.CODEC)
+                .ifPresent(d -> this.smartInv$deathData = d);
     }
 
     @Override
-    public boolean smartInv$shouldKeepInventory(ResourceLocation context) {
+    public boolean smartInv$shouldKeepInventory(Identifier context) {
         return this.smartInv$deathData != null && this.smartInv$deathData.context().contains(context);
     }
 
