@@ -6,6 +6,14 @@ plugins {
 
 neoForge {
     runs {
+        var common = project(":common")
+        data {
+            serverData()
+            programArguments.addAll "--all", "--mod", "${mod_id}"
+            programArguments.addAll "--output", common.file("src/generated/resources").getAbsolutePath()
+            programArguments.addAll "--existing", file("src/main/resources").absolutePath
+            programArguments.addAll "--existing", common.file("src/main/resources").getAbsolutePath()
+        }
         client {
             jvmArgument "-XX:+AllowEnhancedClassRedefinition"
         }
