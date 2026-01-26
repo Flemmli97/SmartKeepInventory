@@ -1,14 +1,10 @@
 package io.github.flemmli97.smartkeepinventory;
 
-import com.ibm.icu.impl.coll.BOCSU;
 import com.mojang.serialization.Codec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -23,6 +19,6 @@ public interface ServerPlayerDeathSource {
     record DeathData(Set<ResourceLocation> context) {
 
         public static final Codec<DeathData> CODEC = ResourceLocation.CODEC.listOf().xmap(l -> new DeathData(Set.copyOf(l)),
-                d-> List.copyOf(d.context()));
+                d -> List.copyOf(d.context()));
     }
 }
