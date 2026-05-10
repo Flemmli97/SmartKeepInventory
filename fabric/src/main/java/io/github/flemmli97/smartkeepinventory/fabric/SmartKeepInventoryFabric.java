@@ -8,6 +8,6 @@ public class SmartKeepInventoryFabric implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        DataResourceLoader.get().registerReloader(ConditionsManager.ID.identifier(), ConditionsManager::create);
+        DataResourceLoader.get().registerReloadListener(ConditionsManager.ID.identifier(), ConditionsManager::create);
     }
 }
