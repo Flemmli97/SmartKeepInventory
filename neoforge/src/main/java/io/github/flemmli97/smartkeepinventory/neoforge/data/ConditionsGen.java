@@ -33,7 +33,7 @@ public class ConditionsGen extends ConditionsProvider {
     protected void add(HolderLookup.Provider provider) {
         this.add(ResourceLocation.fromNamespaceAndPath(SmartKeepInventory.MODID, "bosses"), new ConditionData(
                 Optional.empty(),
-                Optional.of(EntityPredicate.Builder.entity().of(Tags.EntityTypes.BOSSES).build()),
+                Optional.of(new ConditionData.PredicateHolder(EntityPredicate.Builder.entity().of(Tags.EntityTypes.BOSSES).build())),
                 Optional.empty(), true, false));
     }
 }
