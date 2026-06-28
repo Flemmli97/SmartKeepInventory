@@ -34,7 +34,7 @@ public class ConditionsGen extends ConditionsProvider {
     protected void add(HolderLookup.Provider provider) {
         this.add(Identifier.fromNamespaceAndPath(SmartKeepInventory.MODID, "bosses"), new ConditionData(
                 Optional.empty(),
-                Optional.of(EntityPredicate.Builder.entity().of(provider.lookupOrThrow(Registries.ENTITY_TYPE), Tags.EntityTypes.BOSSES).build()),
+                Optional.of(new ConditionData.PredicateHolder(EntityPredicate.Builder.entity().of(provider.lookupOrThrow(Registries.ENTITY_TYPE), Tags.EntityTypes.BOSSES).build())),
                 Optional.empty(), true, false));
     }
 }
