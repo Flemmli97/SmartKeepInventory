@@ -1,5 +1,6 @@
 Smart Keep Inventory 1.1.0
 ================
+- Update to 26.2
 - Add option to invert logic for player and killer predicate. For example
 ```json
 // Suppose you want to invert this

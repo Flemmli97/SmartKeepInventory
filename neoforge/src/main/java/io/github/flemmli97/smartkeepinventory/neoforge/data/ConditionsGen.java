@@ -3,7 +3,7 @@ package io.github.flemmli97.smartkeepinventory.neoforge.data;
 import io.github.flemmli97.smartkeepinventory.SmartKeepInventory;
 import io.github.flemmli97.smartkeepinventory.data.ConditionData;
 import io.github.flemmli97.smartkeepinventory.data.provider.ConditionsProvider;
-import net.minecraft.advancements.criterion.EntityPredicate;
+import net.minecraft.advancements.predicates.entity.EntityPredicate;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
