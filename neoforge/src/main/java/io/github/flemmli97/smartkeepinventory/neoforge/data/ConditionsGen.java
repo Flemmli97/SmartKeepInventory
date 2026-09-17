@@ -27,7 +27,7 @@ public class ConditionsGen extends ConditionsProvider {
     @SubscribeEvent
     public static void data(GatherDataEvent.Server event) {
         DataGenerator data = event.getGenerator();
-        data.addProvider(true, new ConditionsGen(data.getPackOutput(), event.getLookupProvider()));
+        data.addProvider(true, new ConditionsGen(data.getPackOutput(), event.getReloadableLookupProvider()));
     }
 
     @Override

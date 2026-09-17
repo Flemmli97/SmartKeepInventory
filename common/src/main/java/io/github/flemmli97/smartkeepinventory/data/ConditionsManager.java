@@ -1,9 +1,11 @@
 package io.github.flemmli97.smartkeepinventory.data;
 
 import com.google.common.collect.ImmutableMap;
+import com.mojang.serialization.JsonOps;
 import io.github.flemmli97.smartkeepinventory.SmartKeepInventory;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
@@ -26,7 +28,7 @@ public class ConditionsManager extends SimpleJsonResourceReloadListener<Conditio
     private Map<Identifier, ConditionData> predicates = ImmutableMap.of();
 
     private ConditionsManager(HolderLookup.Provider provider) {
-        super(provider, ConditionData.CODEC, ID);
+        super(provider.createSerializationContext(JsonOps.INSTANCE), ConditionData.CODEC, FileToIdConverter.registry(ID));
     }
 
     public static ConditionsManager create(HolderLookup.Provider provider) {
